@@ -135,15 +135,7 @@ resource "aws_instance" "myapp-server" {
 
     associate_public_ip_address = true
 
-    user_data = <<-EOF
-                #!/bin/bash
-                sudo yum update -y
-                sudo yum install docker -y
-                sudo systemctl start docker
-                sudo systemctl enable docker
-                sudo usermod -a -G docker ec2-user
-                docker run -d -p 8080:80 --name webserver nginx
-                EOF
+    user_data = file("entry_script.sh") # Replace with your user data script path
     
     user_data_replace_on_change = true
     tags = {
