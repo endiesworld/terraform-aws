@@ -16,6 +16,9 @@ variable key_name {
 variable public_key_path {
     default = "~/.ssh/id_rsa.pub" # Replace with the path to your public key
 }
+variable private_key_path {
+    default = "~/.ssh/id_rsa" # Replace with the path to your private key
+}
 
 
 resource "aws_vpc" "myapp-vpc" {
@@ -135,9 +138,41 @@ resource "aws_instance" "myapp-server" {
 
     associate_public_ip_address = true
 
-    user_data = file("entry_script.sh") # Replace with your user data script path
+    # user_data = file("entry_script.sh") # Replace with your user data script path
     
-    user_data_replace_on_change = true
+    user_data_replace_on_change =  true
+
+    connection {
+        type = "ssh"
+        user = "ec2-user"
+        private_key = file(var.private_key_path)
+        host = self.public_ip
+    }
+
+    # provisioner "remote-exec" {
+    #     inline = [
+    #         "export ENV=${var.env_prefix}",
+    #         "mkdir my-dir"
+    #     ]
+    # }
+
+    provisioner "file" {
+        source = "entry_script.sh" # Replace with your script path
+        destination = "/home/ec2-user/entry_script.sh"
+    }
+    provisioner "remote-exec" {
+        # inline = [
+        #     "chmod +x /home/ec2-user/entry_script.sh",
+        #     "sudo /home/ec2-user/entry_script.sh"
+        # ]
+
+        script = "entry_script.sh" # Replace with your script path
+    }
+
+    provisioner "local-exec" {
+        command = "echo ${self.public_ip} > instance_public_ip.txt"
+      
+    }
     tags = {
         Name = "${var.env_prefix}-server"
     }
