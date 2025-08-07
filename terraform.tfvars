@@ -4,6 +4,7 @@ avail_zone = "us-west-2a"
 env_prefix = "dev"
 my_IP =  "108.35.175.17/32"
 instance_type = "t2.micro"
+image_name = "amzn2-ami-hvm-2*-x86_64-gp2" # Replace with your desired image name
 key_name = "aws-ec2-key-id-rsa" # Replace with your key pair name
 public_key_path = "~/.ssh/id_ed25519.pub" # Replace with the path to your public key
 private_key_path = "~/.ssh/id_ed25519" # Replace with the path to your private key
