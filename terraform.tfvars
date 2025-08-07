@@ -1,8 +1,6 @@
-vpc_cidr_block =  "10.0.0.0/16"
-subnet_cidr_block = "10.0.1.0/24"
-avail_zone = "us-west-2a"
+# avail_zone = ["us-west-2a", "us-west-2b", "us-west-2c"]
 env_prefix = "dev"
-my_IP =  "108.35.175.17/32"
-instance_type = "t2.micro"
-key_name = "aws-ec2-key-id-rsa" # Replace with your key pair name
-public_key_path = "~/.ssh/id_ed25519.pub" # Replace with the path to your public key
+vpc_cidr_block = "10.0.0.0/16"
+public_subnet_cidr_block = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+private_subnet_cidr_block = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+my_IP = "108.35.175.17"
