@@ -1,32 +1,43 @@
 module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "21.0.7"
+    source  = "terraform-aws-modules/eks/aws"
+    version = "21.0.7"
 
-  name               = "${var.env_prefix}-eks-cluster"
-  kubernetes_version = "1.33"
-  endpoint_public_access = true
-  enable_cluster_creator_admin_permissions = true
-
-  eks_managed_node_groups = {
-    dev = {
-      instance_types = ["t2.medium"]
-      capacity_type  = "SPOT"
-      desired_size   = 3
-      min_size       = 1
-      max_size       = 3
+    name               = "${var.env_prefix}-eks-cluster"
+    kubernetes_version = "1.33"
+    addons = {
+        coredns                = {}
+        eks-pod-identity-agent = {
+        before_compute = true
+        }
+        kube-proxy             = {}
+        vpc-cni                = {
+        before_compute = true
+        }
     }
-  }
 
-  vpc_id     = module.myapp-vpc.vpc_id
-  subnet_ids = module.myapp-vpc.private_subnets
+    endpoint_public_access = true
+    enable_cluster_creator_admin_permissions = true
 
-  tags = {
-    Environment = "dev"
-    application = "myapp"
-    Terraform   = "true"
-  }
+    eks_managed_node_groups = {
+        dev = {
+        ami_type       = "AL2023_x86_64_STANDARD"
+        instance_types = ["m5.xlarge"]
+        desired_size   = 3
+        min_size       = 1
+        max_size       = 3
+        }
+    }
 
-#   depends_on = [module.myapp-vpc]
+    vpc_id     = module.myapp-vpc.vpc_id
+    subnet_ids = module.myapp-vpc.private_subnets
+
+    tags = {
+        Environment = "dev"
+        application = "myapp"
+        Terraform   = "true"
+    }
+
+
 }
 
 
